@@ -3,13 +3,23 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-public class main {
+public class Assign1 {
 
+    /**
+     * Calculates a fibonacci number.
+     * @param val - the value in the sequence to be calculated
+     * @return the corresponding number of the Fibonacci sequence
+     */
     public static int calculateFib(int val) {
         if (val == 0 || val == 1) return val;
         return calculateFib(val - 1) + calculateFib(val - 2);
     }
 
+    /**
+     * Calculates the factorial of a number
+     * @param val - the number to calculate with
+     * @return the factorial of the value
+     */
     public static BigInteger calculateFactorial(int val) {
         if (val == 0 || val == 1) return BigInteger.ONE;
         BigInteger fact = new BigInteger("1");
@@ -17,9 +27,13 @@ public class main {
             fact=fact.multiply(BigInteger.valueOf(i));
         }
         return fact;
-        //return val * calculateFactorial(val - 1);
     }
 
+    /**
+     * Estimates the value of e given a number of iterations for the Taylor series
+     * @param iterations
+     * @return an estimate of e
+     */
     public static BigDecimal estimateE(int iterations) {
         BigDecimal estimate = new BigDecimal(0);
         BigDecimal one = new BigDecimal(1);
@@ -32,6 +46,9 @@ public class main {
         return estimate;
     }
 
+    /**
+     * A menu for possible inputs
+     */
     public static void printHelp() {
         System.out.println("--- Assign 1 Help ---\n" +
                 "  -fib [n] : Compute the Fibonacci of [n]; valid range [0, 40]\n" +
