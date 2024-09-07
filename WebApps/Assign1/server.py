@@ -15,7 +15,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if not data:
                 connection.close()
                 continue
-
+            data = data.decode()
+            print(data)
+            dataList=data.split(" ")
+            #request= Request(dataList[0], dataList[1], dataList[2], "buh", "e")
             #TODO: parse the request, send through middleware and encode the response
             res = "HTTP/1.1 200 Ok\nConnection: close\n\n<h1>Hello, world!</h1>"
 
@@ -67,7 +70,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 pass
 
             
-
             #endpoints (correspond to templates)
 
             # called by the router when the URI is /about
