@@ -34,6 +34,15 @@ class Response:
         self.headers = headers
         self.text = text
 
+def makeHeaders(data):
+    headers = {}
+    for i in range(len(data)):
+        entry= data[i].replace("\r","")
+        entries = entry.split(":",1)
+        print(entries[0])
+        headers.update({entries[0]:entries[1]})
+    return headers
+
 #decides which endpoint to call
 #router
 def router(req):
@@ -100,9 +109,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 connection.close()
                 continue
             data = data.decode()
-            dataList=data.split(" ")
-            print(dataList)
-            #request= Request(dataList[0], dataList[1], dataList[2], "buh", "e")
+            print(data)
+            dataList=data.strip("\r").split("\n")
+            requestText=dataList[0]
+            requestHeaders = makeHeaders(dataList[1:])
+            request= Request(requestText.split[0], requestText.split[1], requestText.split[2], requestText, requestHeaders)
+            print(request)
             #TODO: parse the request, send through middleware and encode the response
             text=index(dataList[1])
             res = "HTTP/1.1 200 Ok\nConnection: close\n\n" + text
