@@ -112,9 +112,9 @@ def findStatic(data):
 #creates a dictionary of headers the responses have in common
 def makeGoodHeaders(req):
     headers={"Server" : "Cool guy server", 
-             "Date": datetime.datetime.now(), 
-             "Connection" : "close", 
-             "Cache-Control": "max-age=200"
+            "Date": datetime.datetime.now(), 
+            "Connection" : "close", 
+            "Cache-Control": "max-age=200"
             }  
     return headers
 
