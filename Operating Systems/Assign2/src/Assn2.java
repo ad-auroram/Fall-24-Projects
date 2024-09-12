@@ -1,8 +1,3 @@
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 public class Assn2 {
 
     public static void main(String[] args) {
