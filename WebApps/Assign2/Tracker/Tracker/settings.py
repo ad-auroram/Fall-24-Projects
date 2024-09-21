@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
-    'tracker-app.apps.MyappConfig'
+    'trackerApp.apps.TrackerConfig'
 ]
 
 MIDDLEWARE = [
