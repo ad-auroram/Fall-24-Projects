@@ -1,0 +1,38 @@
+body{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: rgb(211, 188, 192);
+    color: rgb(14, 16, 61);
+    text-align: center;
+    align-items: center;
+    
+}
+
+.page-title{
+    width: auto;
+    background-color: rgb(14, 16, 61);
+    color: rgb(211, 188, 192);
+    text-align: left;
+    margin: 0px;
+    padding: 20px;
+}
+
+#activity-list{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 15px;
+}
+
+.activity-block{
+    display:flex;
+    text-align: center;
+    width: 200px;
+    height:100px;
+    padding: 35px;
+    margin:20px;
+    border-radius: 15%;
+    background-color: rgb(105, 48, 109);
+    color:rgb(211, 188, 192);
+}
+
