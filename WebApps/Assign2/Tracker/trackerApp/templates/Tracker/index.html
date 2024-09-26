@@ -14,12 +14,14 @@
     <section id="activity-list">
         {%if activities%}
             {%for activity in activities%}
+            <a href="{% url 'activity' activity.id %}">
                 <div
                 data-activity-id="{{activity.id}}"
                 class="activity-block"
                 >{{activity.name}} <br>
                 Total: {{activity.time_spent}}
                 </div>
+            </a>
             {% endfor %}
         {% else %}
             <p>No activities yet!</p>

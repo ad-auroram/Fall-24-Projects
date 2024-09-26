@@ -15,8 +15,8 @@ def newActivity(request):
             name=params.get("name")
         )
         activity.save()
-        start_time = params.get("start-time")
-        end_time = params.get("end-time")
+        start_time = params.get("start_time")
+        end_time = params.get("end_time")
         if start_time and end_time:  # Ensure both times are provided
             time_log = TimeLog(
                 start_time=start_time,
@@ -29,18 +29,17 @@ def newActivity(request):
 
     return render(request, "Tracker/new_activity.html")
 
-def activity(request):
-    #activity = get the activity by requested id
+def activity(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
     return render(request, "Tracker/activity.html", {'activity': activity})
 
-def newTimelog(request):
+def newTimelog(request, activity_id):
     if request.method == "POST":
         params = request.POST
 
-        start_time = datetime.strptime(params.get("start-time"), '%Y-%m-%dT%H:%M')
-        end_time = datetime.strptime(params.get("end-time"), '%Y-%m-%dT%H:%M')
+        start_time = datetime.strptime(params.get("start_time"), '%Y-%m-%dT%H:%M')
+        end_time = datetime.strptime(params.get("end_time"), '%Y-%m-%dT%H:%M')
         
-        activity_id = params.get("activity_id")
         activity = Activity.objects.get(id=activity_id)
 
         time_log = TimeLog(
@@ -50,6 +49,6 @@ def newTimelog(request):
         )
         time_log.save()
 
-        return redirect("activity") 
+        return redirect("activity", activity_id=activity_id)
 
     return render(request, "Tracker/new_time.html", {'activity_id': activity_id})

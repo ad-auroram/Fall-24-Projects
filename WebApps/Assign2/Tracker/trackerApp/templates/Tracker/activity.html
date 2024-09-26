@@ -9,7 +9,7 @@
 <body>
     <header class="page-title">
         <h1 >Activity</h1>
-        <a href="/new_timelog" class="new-link">New Timelog</a>
+        <a href="{% url 'timelog' activity.id %}" class="new-link">New Timelog</a>
     </header>
     <span> make table?</span>
     <table>
@@ -21,8 +21,8 @@
         {% if times %}
             {%for time in times%}
                 <tr>
-                    <td>{{time.start-time}}</td>
-                    <td>{{time.end-time}}</td>
+                    <td>{{time.start_time}}</td>
+                    <td>{{time.end_time}}</td>
                     <td></td>
                 </tr>
             {%endfor%}
