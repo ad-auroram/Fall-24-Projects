@@ -1,0 +1,16 @@
+.textbox{
+    margin-bottom: 20px;
+    height: 25px;
+    border: none;
+    border-radius: 5px;
+}
+
+.submit{
+    margin-top: 20px;
+    padding: 10px;
+    width: auto;
+    border: 2px solid rgb(14, 16, 61);
+    border-radius:15px;
+    background-color: rgb(105, 48, 109);
+    color:rgb(211, 188, 192)
+}

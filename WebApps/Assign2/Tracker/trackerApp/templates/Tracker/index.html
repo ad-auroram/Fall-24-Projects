@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href='../styling.css' />
+    <link rel="stylesheet" href="{% static 'Tracker/styling.css' %}" />
+    <link rel="stylesheet" href="{% static 'Tracker/index.css' %}" />
     <title>Activity Tracker</title>
 </head>
 <body>
@@ -15,12 +17,10 @@
     <section id="activity-list">
         {%if activities%}
             {%for activity in activities%}
-            <a href="{% url 'activity' activity.id %}">
-                <div
-                data-activity-id="{{activity.id}}"
-                class="activity-block"
-                >{{activity.name}} <br>
-                Total: {{activity.time_spent}} <br>
+            <a href="{% url 'activity' activity.id %}" class="activity-link">
+                <div data-activity-id="{{activity.id}}" class="activity-block">
+                    <span class="name">{{activity.name}}</span> <br>
+                <span>Total: {{activity.time_spent}}</span> <br>
                 </div>
             </a>
             {% endfor %}
