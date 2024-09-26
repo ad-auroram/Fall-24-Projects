@@ -18,3 +18,9 @@ class TimeLog(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     activity =models.ForeignKey(Activity, on_delete=models.CASCADE)
+
+    @property
+    def time_spent(self):
+        delta = timedelta()
+        delta += (self.end_time - self.start_time)
+        return str(delta)

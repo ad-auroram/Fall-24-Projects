@@ -11,7 +11,7 @@
         <h1 >Activity</h1>
         <a href="{% url 'timelog' activity.id %}" class="new-link">New Timelog</a>
     </header>
-    <span> make table?</span>
+    <div class="spacer"></div>
     <table>
         <tr>
             <th>Start At</th>
@@ -23,7 +23,7 @@
                 <tr>
                     <td>{{time.start_time}}</td>
                     <td>{{time.end_time}}</td>
-                    <td></td>
+                    <td>{{time.time_spent}}</td>
                 </tr>
             {%endfor%}
         {%else%}

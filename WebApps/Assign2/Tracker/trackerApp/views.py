@@ -31,7 +31,8 @@ def newActivity(request):
 
 def activity(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
-    return render(request, "Tracker/activity.html", {'activity': activity})
+    times = activity.timelog_set.all()
+    return render(request, "Tracker/activity.html", {'activity': activity, "times":times})
 
 def newTimelog(request, activity_id):
     if request.method == "POST":

@@ -11,6 +11,7 @@
         <h1 >Activity Tracker</h1>
         <a href="/new_activity" class="new-link">New Activity</a>
     </header>
+    <div class="spacer"></div>
     <section id="activity-list">
         {%if activities%}
             {%for activity in activities%}
@@ -19,7 +20,7 @@
                 data-activity-id="{{activity.id}}"
                 class="activity-block"
                 >{{activity.name}} <br>
-                Total: {{activity.time_spent}}
+                Total: {{activity.time_spent}} <br>
                 </div>
             </a>
             {% endfor %}
