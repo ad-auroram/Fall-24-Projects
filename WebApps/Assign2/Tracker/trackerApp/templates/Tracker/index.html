@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styling.css" />
+    <link rel="stylesheet" href='../styling.css' />
     <title>Activity Tracker</title>
 </head>
 <body>
@@ -12,9 +12,18 @@
         <a href="/new_activity" class="new-link">New Activity</a>
     </header>
     <section id="activity-list">
-        <span class = "activity-block">activity</span>
-        <span class = "activity-block">activity</span>
-        <span class = "activity-block">activity</span>
+        {%if activities%}
+            {%for activity in activities%}
+                <div
+                data-activity-id="{{activity.id}}"
+                class="activity-block"
+                >{{activity.name}} <br>
+                Total: {{activity.time_spent}}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No activities yet!</p>
+        {%endif%}
     </section>
 </body>
 </html>

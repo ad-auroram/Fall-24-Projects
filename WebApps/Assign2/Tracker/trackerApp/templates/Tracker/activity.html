@@ -12,12 +12,24 @@
         <a href="/new_timelog" class="new-link">New Timelog</a>
     </header>
     <span> make table?</span>
-    <ul>
-        <li>timelog</li>
-        <li>timelog</li>
-        <li>timelog</li>
-        <li>timelog</li>
-    </ul>
+    <table>
+        <tr>
+            <th>Start At</th>
+            <th>End At</th>
+            <th>Total Time</th>
+        </tr>
+        {% if times %}
+            {%for time in times%}
+                <tr>
+                    <td>{{time.start-time}}</td>
+                    <td>{{time.end-time}}</td>
+                    <td></td>
+                </tr>
+            {%endfor%}
+        {%else%}
+        <p>No times yet!</p>
+        {%endif%}
+    </table>
     
 </body>
 </html>

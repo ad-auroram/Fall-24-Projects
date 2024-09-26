@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styling.css" />
+    <link rel="stylesheet" href="../styling.css" />
     <title>Add Timelog</title>
 </head>
 <body>
@@ -11,18 +11,13 @@
         <h1 class="page-title">New Timelog</h1>
     </header>
     <div class="spacer"></div>
-    <form>
+    <form method="POST">
+        <input type="hidden" name="activity_id" value="{{ activity.id }}">
         <label for="name">Start time:</label><br>
-<<<<<<< HEAD
         <input type = "datetime-local" id="start-time" name="start-time"><br>
         <label for="name">End time:</label><br>
         <input type = "datetime-local" id="end-time" name="end-time"><br>
-=======
-        <input type = "datetime" id="start-time" class="textbox" name="start-time"><br>
-        <label for="name">End time:</label><br>
-        <input type = "datetime" id="end-time" class="textbox" name="end-time"><br>
         <button class="submit" >Submit</button>
->>>>>>> a18b48e9cb596fe76236bffe0dfae23863c6bb67
     </form>
 </body>
 </html>
