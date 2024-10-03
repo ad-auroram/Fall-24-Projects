@@ -25,22 +25,24 @@ public class Shell {
     }
 
     public static void changeDir(String directory) {
-        Path newPath;
         if ("..".equals(directory)) {
-            newPath = currentDir.getParent();
-            if (newPath != null) {
-                currentDir = newPath.toAbsolutePath();
+            Path parentDir = currentDir.getParent();
+            if (parentDir != null) {
+                currentDir = parentDir.toAbsolutePath(); // Move to the parent directory
+            } else {
+                System.out.println("Error: Already at the root directory.");
+            }
+        } else {
+            // Resolve the new directory
+            Path newPath = currentDir.resolve(directory);
+            if (Files.exists(newPath) && Files.isDirectory(newPath)) {
+                currentDir = newPath.toAbsolutePath(); // Update to the new directory
             } else {
                 System.out.println("Error: Directory not found.");
             }
         }
-        newPath = currentDir.resolve(directory);
-        if (Files.exists(newPath) && Files.isDirectory(newPath)) {
-            currentDir = newPath.toAbsolutePath();
-        } else {
-            System.out.println("Error: Directory not found.");
-        }
     }
+
 
     private static void makeDir(String[] arguments) {
         System.out.println("making directory");
@@ -64,7 +66,13 @@ public class Shell {
             case "ptime" -> ptime(arguments);
             case "history" -> history();
             case "list" -> list(arguments);
-            case "cd" -> changeDir(arguments[1]);
+            case "cd" -> {
+                if (arguments.length > 1) {
+                    changeDir(arguments[1]);
+                } else {
+                    System.out.println("Error: No directory specified.");
+                };
+            }
             case "mdir" -> makeDir(arguments);
             case "rdir" -> removeDir(arguments);
             //case "|" -> pipe(arguments);
@@ -100,7 +108,7 @@ public class Shell {
         Scanner input = new Scanner(System.in);
         boolean running = true;
         while (running) {
-            System.out.printf("[%s]: ", System.getProperty("user.dir"));
+            System.out.printf("[%s]: ", currentDir.toString());
             String argument = input.nextLine();
             if (Objects.equals(argument, "exit")) {
                 running = false;
