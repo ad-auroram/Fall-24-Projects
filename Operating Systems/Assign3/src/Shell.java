@@ -21,9 +21,10 @@ public class Shell {
 
 
     public static void history() {
-        int count = 0;
+        int count = 1;
         for (String argument : history) {
             System.out.println(count+ ": " +argument);
+            count++;
         }
     }
 
@@ -93,29 +94,50 @@ public class Shell {
         return sdf.format(date);
     }
 
+    private static void fromHist(String number){
+        try {
+            int index = Integer.parseInt(number) - 1;
+            if (index < 0 || index >= history.size()) {
+                System.out.println("Invalid index.");
+            }
+            String pastCommand = history.get(index);
+            history.add(pastCommand);
+            String[] arguments = splitCommand(pastCommand);
+            findCommand(arguments);
+        }catch(NumberFormatException e) {
+            System.out.println("Invalid number format.");
+        }
+    }
+
     private static void passCommand(String[] command){
 
     }
 
 
     private static void findCommand(String[] arguments) {
-        String command = arguments[0];
-        switch (command) {
-            case "ptime" -> ptime(arguments);
-            case "history" -> history();
-            case "list" -> list();
-            case "cd" -> {
-                if (arguments.length > 1) {
-                    changeDir(arguments[1]);
-                } else {
-                    System.out.println("Error: No directory specified.");
-                };
+        ArrayList<String> builtins = new ArrayList<>(Arrays.asList("ptime", "history", "cd", "mdir", "rdir", "list", "^"));
+        if (!builtins.contains(arguments[0])) {
+            passCommand(arguments);
+        }else {
+            String command = arguments[0];
+            switch (command) {
+                case "ptime" -> ptime(arguments);
+                case "history" -> history();
+                case "list" -> list();
+                case "cd" -> {
+                    if (arguments.length > 1) {
+                        changeDir(arguments[1]);
+                    } else {
+                        System.out.println("Error: No directory specified.");
+                    }
+                    ;
+                }
+                case "mdir" -> makeDir(arguments[1]);
+                case "rdir" -> removeDir(arguments[1]);
+                //case "|" -> pipe(arguments);
+                case "^" -> fromHist(arguments[1]);
+                default -> System.out.println("Command not found.");
             }
-            case "mdir" -> makeDir(arguments[1]);
-            case "rdir" -> removeDir(arguments[1]);
-            //case "|" -> pipe(arguments);
-            //case "^" -> number(arguments);
-            default -> System.out.println("Command not found.");
         }
     }
 
@@ -142,7 +164,7 @@ public class Shell {
 
 
     public static void main(String[] args) {
-        ArrayList<String> builtins = new ArrayList<>(Arrays.asList("ptime", "history", "cd", "mdir", "rdir", "list", "^"));
+        Shell shell = new Shell();
         Scanner input = new Scanner(System.in);
         boolean running = true;
         while (running) {
@@ -153,11 +175,7 @@ public class Shell {
             } else {
                 history.add(argument);
                 String[] arguments = splitCommand(argument);
-                if (builtins.contains(arguments[0])) {
-                    findCommand(arguments);
-                }else{
-                    passCommand(arguments);
-                }
+                findCommand(arguments);
             }
         }
     }
