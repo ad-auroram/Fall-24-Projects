@@ -1,12 +1,16 @@
 
+import java.io.File;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Scanner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class Shell {
     private static Path currentDir;
@@ -56,16 +60,40 @@ public class Shell {
         System.out.println("time");
     }
 
-    private static void list(String[] arguments){
-        System.out.println("list");
+    private static void list(){
+        File current = new File(String.valueOf(currentDir));
+        File[] files = current.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String permissions = (file.isDirectory() ? "d" : "-") +
+                        (file.canRead() ? "r" : "-") +
+                        (file.canWrite() ? "w" : "-") +
+                        (file.canExecute() ? "x" : "-");
+                long size = file.length();
+                String formattedDate = formatDate(file.lastModified());
+                String fileName = file.getName();
+
+                // Print the formatted output
+                System.out.printf("%s %10d %s %s\n", permissions, size, formattedDate, fileName);
+            }
+        } else {
+            System.out.println("Error: Unable to list files.");
+        }
     }
+    private static String formatDate(long lastModified) {
+        Date date = new Date(lastModified);
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
+        return sdf.format(date);
+    }
+
+
 
     private static void findCommand(String[] arguments) {
         String command = arguments[0];
         switch (command) {
             case "ptime" -> ptime(arguments);
             case "history" -> history();
-            case "list" -> list(arguments);
+            case "list" -> list();
             case "cd" -> {
                 if (arguments.length > 1) {
                     changeDir(arguments[1]);
