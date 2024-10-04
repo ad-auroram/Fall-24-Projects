@@ -1,11 +1,9 @@
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Matcher;
@@ -23,8 +21,9 @@ public class Shell {
 
 
     public static void history() {
+        int count = 0;
         for (String argument : history) {
-            System.out.println(argument);
+            System.out.println(count+ ": " +argument);
         }
     }
 
@@ -32,21 +31,19 @@ public class Shell {
         if ("..".equals(directory)) {
             Path parentDir = currentDir.getParent();
             if (parentDir != null) {
-                currentDir = parentDir.toAbsolutePath(); // Move to the parent directory
+                currentDir = parentDir.toAbsolutePath();
             } else {
                 System.out.println("Error: Already at the root directory.");
             }
         } else {
-            // Resolve the new directory
             Path newPath = currentDir.resolve(directory);
             if (Files.exists(newPath) && Files.isDirectory(newPath)) {
-                currentDir = newPath.toAbsolutePath(); // Update to the new directory
+                currentDir = newPath.toAbsolutePath();
             } else {
                 System.out.println("Error: Directory not found.");
             }
         }
     }
-
 
     private static void makeDir(String name) {
         System.out.println("making directory");
@@ -96,6 +93,9 @@ public class Shell {
         return sdf.format(date);
     }
 
+    private static void passCommand(String[] command){
+
+    }
 
 
     private static void findCommand(String[] arguments) {
@@ -142,7 +142,7 @@ public class Shell {
 
 
     public static void main(String[] args) {
-        Shell shell = new Shell();
+        ArrayList<String> builtins = new ArrayList<>(Arrays.asList("ptime", "history", "cd", "mdir", "rdir", "list", "^"));
         Scanner input = new Scanner(System.in);
         boolean running = true;
         while (running) {
@@ -153,7 +153,11 @@ public class Shell {
             } else {
                 history.add(argument);
                 String[] arguments = splitCommand(argument);
-                findCommand(arguments);
+                if (builtins.contains(arguments[0])) {
+                    findCommand(arguments);
+                }else{
+                    passCommand(arguments);
+                }
             }
         }
     }
