@@ -130,10 +130,21 @@ public class Shell {
                     } else {
                         System.out.println("Error: No directory specified.");
                     }
-                    ;
                 }
-                case "mdir" -> makeDir(arguments[1]);
-                case "rdir" -> removeDir(arguments[1]);
+                case "mdir" -> {
+                    if (arguments.length > 1) {
+                        makeDir(arguments[1]);
+                    } else {
+                        System.out.println("Error: No directory name specified.");
+                    }
+                }
+                case "rdir" -> {
+                    if (arguments.length > 1) {
+                        removeDir(arguments[1]);
+                    } else {
+                        System.out.println("Error: No directory name specified.");
+                    }
+                }
                 //case "|" -> pipe(arguments);
                 case "^" -> fromHist(arguments[1]);
                 default -> System.out.println("Command not found.");
