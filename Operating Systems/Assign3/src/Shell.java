@@ -1,5 +1,5 @@
-
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,12 +48,24 @@ public class Shell {
     }
 
 
-    private static void makeDir(String[] arguments) {
+    private static void makeDir(String name) {
         System.out.println("making directory");
+        Path path = Paths.get(name);
+        try {
+            Files.createDirectory(path);
+        } catch (IOException e) {
+            System.err.println("Failed to create directory: " + e.getMessage());
+        }
     }
 
-    private static void removeDir(String[] arguments) {
+    private static void removeDir(String name) {
         System.out.println("removing directory");
+        Path path = Paths.get(name);
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            System.err.println("Failed to remove directory: " + e.getMessage());
+        }
     }
 
     private static void ptime(String[] arguments) {
@@ -72,8 +84,6 @@ public class Shell {
                 long size = file.length();
                 String formattedDate = formatDate(file.lastModified());
                 String fileName = file.getName();
-
-                // Print the formatted output
                 System.out.printf("%s %10d %s %s\n", permissions, size, formattedDate, fileName);
             }
         } else {
@@ -101,8 +111,8 @@ public class Shell {
                     System.out.println("Error: No directory specified.");
                 };
             }
-            case "mdir" -> makeDir(arguments);
-            case "rdir" -> removeDir(arguments);
+            case "mdir" -> makeDir(arguments[1]);
+            case "rdir" -> removeDir(arguments[1]);
             //case "|" -> pipe(arguments);
             //case "^" -> number(arguments);
             default -> System.out.println("Command not found.");
