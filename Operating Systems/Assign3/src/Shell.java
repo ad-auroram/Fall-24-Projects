@@ -25,6 +25,7 @@ public class Shell {
 
     public static void history() {
         int count = 1;
+        System.out.println("---Command History---");
         for (String argument : history) {
             System.out.println(count+ ": " +argument);
             count++;
@@ -52,7 +53,6 @@ public class Shell {
     }
 
     private static void makeDir(String name) {
-        System.out.println("making directory");
         Path path = Paths.get(name);
         try {
             Files.createDirectory(path);
@@ -62,7 +62,6 @@ public class Shell {
     }
 
     private static void removeDir(String name) {
-        System.out.println("removing directory");
         Path path = Paths.get(name);
         try {
             Files.delete(path);
@@ -72,7 +71,7 @@ public class Shell {
     }
 
     private static void ptime() {
-        System.out.println("Total time in child processes: "+totalTime);
+        System.out.println("Total time in child processes: "+String.format("%.4f", totalTime));
     }
 
     private static void list(){
@@ -131,25 +130,29 @@ public class Shell {
     private static void executeCommands(String[] commands, boolean isBackground, long startTime) throws IOException, InterruptedException {
         ProcessBuilder processBuilder;
 
+    
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             processBuilder = new ProcessBuilder("cmd.exe", "/c", String.join(" ", commands));
         } else {
-            processBuilder = new ProcessBuilder(commands[0].trim().split(" "));
+            processBuilder = new ProcessBuilder("bash", "-c", String.join(" ", commands));
         }
 
         Process process = processBuilder.start();
 
-
+        
         for (int i = 1; i < commands.length; i++) {
             ProcessBuilder nextBuilder;
-
+    
+            // Use cmd.exe for the next commands if on Windows
             if (System.getProperty("os.name").toLowerCase().contains("win")) {
                 nextBuilder = new ProcessBuilder("cmd.exe", "/c", commands[i].trim());
             } else {
-                nextBuilder = new ProcessBuilder(commands[i]);
+                // Use bash for Linux and macOS
+                nextBuilder = new ProcessBuilder("bash", "-c", commands[i].trim());
             }
-
+    
             Process nextProcess = nextBuilder.start();
+
 
             try (InputStream is = process.getInputStream(); OutputStream os = nextProcess.getOutputStream()) {
                 byte[] buffer = new byte[1024];
@@ -159,11 +162,12 @@ public class Shell {
                 }
             }
             process = nextProcess;
+        }
             if (!isBackground) {
                 long endTime = System.currentTimeMillis();
                 totalTime += (endTime - startTime) / 1000.0;
             }
-        }
+        
     }
 
     private static void findCommand(String[] arguments) {
