@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+application{
+	mainClassName = 'Shell'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Shell'
+    }
+}
+
+run {
+    standardInput = System.in
+}
+
+archivesBaseName = 'Shell'

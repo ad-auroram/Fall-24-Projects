@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -53,7 +55,7 @@ public class Shell {
     }
 
     private static void makeDir(String name) {
-        Path path = Paths.get(name);
+        Path path = currentDir.resolve(name);
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
@@ -62,7 +64,7 @@ public class Shell {
     }
 
     private static void removeDir(String name) {
-        Path path = Paths.get(name);
+        Path path = currentDir.resolve(name);
         try {
             Files.delete(path);
         } catch (IOException e) {
@@ -122,52 +124,96 @@ public class Shell {
 
         try {
             executeCommands(command, isBackground, startTime);
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             System.err.println("Error executing command: " + e.getMessage());
         }
     }
 
     private static void executeCommands(String[] commands, boolean isBackground, long startTime) throws IOException, InterruptedException {
         ProcessBuilder processBuilder;
-
+        String commandString = String.join(" ", commands);
     
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            processBuilder = new ProcessBuilder("cmd.exe", "/c", String.join(" ", commands));
+            processBuilder = new ProcessBuilder("cmd.exe", "/c", commandString);
         } else {
-            processBuilder = new ProcessBuilder("bash", "-c", String.join(" ", commands));
+            processBuilder = new ProcessBuilder("bash", "-c", commandString);
         }
-
+        processBuilder.directory(currentDir.toFile());
         Process process = processBuilder.start();
-
         
-        for (int i = 1; i < commands.length; i++) {
-            ProcessBuilder nextBuilder;
     
-            // Use cmd.exe for the next commands if on Windows
+        // Capture standard output
+        try (InputStream is = process.getInputStream();
+             InputStreamReader isr = new InputStreamReader(is);
+             BufferedReader br = new BufferedReader(isr)) {
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);  // Print each line of output
+            }
+        }
+    
+        // Capture standard error
+        try (InputStream es = process.getErrorStream();
+             InputStreamReader esr = new InputStreamReader(es);
+             BufferedReader ebr = new BufferedReader(esr)) {
+            
+            String errorLine;
+            while ((errorLine = ebr.readLine()) != null) {
+                System.err.println(errorLine);  // Print error messages
+            }
+        }
+    
+        // Wait for the process to finish and capture the exit code
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            System.err.println("Command exited with error code: " + exitCode);
+        }
+    
+        // If there are additional commands to execute
+        for (int i = 1; i < commands.length; i++) {
+            // Set up and execute each subsequent command
             if (System.getProperty("os.name").toLowerCase().contains("win")) {
-                nextBuilder = new ProcessBuilder("cmd.exe", "/c", commands[i].trim());
+                processBuilder = new ProcessBuilder("cmd.exe", "/c", commands[i].trim());
             } else {
-                // Use bash for Linux and macOS
-                nextBuilder = new ProcessBuilder("bash", "-c", commands[i].trim());
+                processBuilder = new ProcessBuilder("bash", "-c", commands[i].trim());
             }
     
-            Process nextProcess = nextBuilder.start();
-
-
-            try (InputStream is = process.getInputStream(); OutputStream os = nextProcess.getOutputStream()) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, bytesRead);
+            Process nextProcess = processBuilder.start();
+    
+            // Capture output for the next command
+            try (InputStream is = nextProcess.getInputStream();
+                 InputStreamReader isr = new InputStreamReader(is);
+                 BufferedReader br = new BufferedReader(isr)) {
+                
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);  // Print each line of output
                 }
             }
-            process = nextProcess;
-        }
-            if (!isBackground) {
-                long endTime = System.currentTimeMillis();
-                totalTime += (endTime - startTime) / 1000.0;
+    
+            // Capture errors for the next command
+            try (InputStream es = nextProcess.getErrorStream();
+                 InputStreamReader esr = new InputStreamReader(es);
+                 BufferedReader ebr = new BufferedReader(esr)) {
+                
+                String errorLine;
+                while ((errorLine = ebr.readLine()) != null) {
+                    System.err.println(errorLine);  // Print error messages
+                }
             }
-        
+    
+            // Wait for the next process to finish
+            int exitCodeNext = nextProcess.waitFor();
+            if (exitCodeNext != 0) {
+                System.err.println("Command exited with error code: " + exitCodeNext);
+            }
+        }
+    
+        if (!isBackground) {
+            long endTime = System.currentTimeMillis();
+            totalTime += (endTime - startTime) / 1000.0;
+        }
     }
 
     private static void findCommand(String[] arguments) {
