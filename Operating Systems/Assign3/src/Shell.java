@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -144,8 +143,8 @@ public class Shell {
     
         // Capture standard output
         try (InputStream is = process.getInputStream();
-             InputStreamReader isr = new InputStreamReader(is);
-             BufferedReader br = new BufferedReader(isr)) {
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr)) {
             
             String line;
             while ((line = br.readLine()) != null) {
@@ -155,8 +154,8 @@ public class Shell {
     
         // Capture standard error
         try (InputStream es = process.getErrorStream();
-             InputStreamReader esr = new InputStreamReader(es);
-             BufferedReader ebr = new BufferedReader(esr)) {
+            InputStreamReader esr = new InputStreamReader(es);
+            BufferedReader ebr = new BufferedReader(esr)) {
             
             String errorLine;
             while ((errorLine = ebr.readLine()) != null) {
@@ -183,8 +182,8 @@ public class Shell {
     
             // Capture output for the next command
             try (InputStream is = nextProcess.getInputStream();
-                 InputStreamReader isr = new InputStreamReader(is);
-                 BufferedReader br = new BufferedReader(isr)) {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr)) {
                 
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -194,8 +193,8 @@ public class Shell {
     
             // Capture errors for the next command
             try (InputStream es = nextProcess.getErrorStream();
-                 InputStreamReader esr = new InputStreamReader(es);
-                 BufferedReader ebr = new BufferedReader(esr)) {
+                InputStreamReader esr = new InputStreamReader(es);
+                BufferedReader ebr = new BufferedReader(esr)) {
                 
                 String errorLine;
                 while ((errorLine = ebr.readLine()) != null) {
