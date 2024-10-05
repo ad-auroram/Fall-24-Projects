@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -13,10 +14,12 @@ import java.util.regex.Pattern;
 public class Shell {
     private static Path currentDir;
     private static ArrayList<String> history;
+    private static double totalTime;
 
     public Shell() {
         currentDir = Paths.get(System.getProperty("user.dir"));
         history= new ArrayList<>();
+        totalTime = 0;
     }
 
 
@@ -29,7 +32,9 @@ public class Shell {
     }
 
     public static void changeDir(String directory) {
-        if ("..".equals(directory)) {
+        if("home".equals(directory)){
+            currentDir = Paths.get(System.getProperty("user.home"));
+        } else if ("..".equals(directory)) {
             Path parentDir = currentDir.getParent();
             if (parentDir != null) {
                 currentDir = parentDir.toAbsolutePath();
@@ -66,8 +71,8 @@ public class Shell {
         }
     }
 
-    private static void ptime(String[] arguments) {
-        System.out.println("time");
+    private static void ptime() {
+        System.out.println("Total time in child processes: "+totalTime);
     }
 
     private static void list(){
@@ -110,9 +115,56 @@ public class Shell {
     }
 
     private static void passCommand(String[] command){
+        long startTime = System.currentTimeMillis();
+        boolean isBackground = command[command.length - 1].endsWith("&");
+        if (isBackground) {
+            command[command.length - 1] = command[command.length - 1].replace("&", "").trim();
+        }
 
+        try {
+            executeCommands(command, isBackground, startTime);
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error executing command: " + e.getMessage());
+        }
     }
 
+    private static void executeCommands(String[] commands, boolean isBackground, long startTime) throws IOException, InterruptedException {
+        ProcessBuilder processBuilder;
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            processBuilder = new ProcessBuilder("cmd.exe", "/c", String.join(" ", commands));
+        } else {
+            processBuilder = new ProcessBuilder(commands[0].trim().split(" "));
+        }
+
+        Process process = processBuilder.start();
+
+
+        for (int i = 1; i < commands.length; i++) {
+            ProcessBuilder nextBuilder;
+
+            if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                nextBuilder = new ProcessBuilder("cmd.exe", "/c", commands[i].trim());
+            } else {
+                nextBuilder = new ProcessBuilder(commands[i]);
+            }
+
+            Process nextProcess = nextBuilder.start();
+
+            try (InputStream is = process.getInputStream(); OutputStream os = nextProcess.getOutputStream()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+            }
+            process = nextProcess;
+            if (!isBackground) {
+                long endTime = System.currentTimeMillis();
+                totalTime += (endTime - startTime) / 1000.0;
+            }
+        }
+    }
 
     private static void findCommand(String[] arguments) {
         ArrayList<String> builtins = new ArrayList<>(Arrays.asList("ptime", "history", "cd", "mdir", "rdir", "list", "^"));
@@ -121,14 +173,14 @@ public class Shell {
         }else {
             String command = arguments[0];
             switch (command) {
-                case "ptime" -> ptime(arguments);
+                case "ptime" -> ptime();
                 case "history" -> history();
                 case "list" -> list();
                 case "cd" -> {
                     if (arguments.length > 1) {
                         changeDir(arguments[1]);
                     } else {
-                        System.out.println("Error: No directory specified.");
+                        changeDir("home");
                     }
                 }
                 case "mdir" -> {
@@ -145,7 +197,6 @@ public class Shell {
                         System.out.println("Error: No directory name specified.");
                     }
                 }
-                //case "|" -> pipe(arguments);
                 case "^" -> fromHist(arguments[1]);
                 default -> System.out.println("Command not found.");
             }
