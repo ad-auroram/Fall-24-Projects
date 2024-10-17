@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>New Destination</title>
 </head>
 <body>
-    
+    <form method="POST">
+        <label for="location">Name:</label><br>
+        <input type = "text" id="location" name="location"><br>
+        <label for="review">Review</label><br>
+        <input type = "text" id="review" name="review"><br>
+        <label for="score">Review</label><br>
+        <input type = "number" id="score" name="score" min="1" max="5"><br>
+        <input type = "checkbox" id="public" name="public">
+        <label for="public">Show publically?</label>
+        <button class="submit" >Submit</button>
+    </form>
 </body>
 </html>
