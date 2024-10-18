@@ -10,5 +10,5 @@ urlpatterns = [
     path("destinations/new", views.newDestination, name="newDestination"),
     path("destinations/<int:id>", views.editEntry, name="edit"),
     #path("destinations/<int: id>/destroy", views.deleteEntry, name="deleteEntry"),
-
+    path("error", views.error, name="error")
 ]

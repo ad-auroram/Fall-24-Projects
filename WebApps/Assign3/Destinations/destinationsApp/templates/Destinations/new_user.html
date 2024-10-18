@@ -1,11 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'Destinations/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'Destinations/forms.css' %}" />
     <title>Create Account</title>
 </head>
 <body>
+    <header class="page-title">
+        <h1 >Destinations</h1>
+        <section id="links">
+            <a href="/users/new" class="new-link">Create Account</a>
+            <a href="/sessions/new" class="new-link">Sign In</a>
+        </section>
+    </header>
+    <div class="spacer"></div>
     <form method="POST">
         <label for="name">Name:</label><br>
         <input type = "text" id="name" name="name"><br>
