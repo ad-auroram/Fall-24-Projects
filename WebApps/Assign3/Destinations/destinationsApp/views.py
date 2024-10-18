@@ -19,16 +19,19 @@ def newUser(request):
             email = params.get("email"),
             password_hash = make_password(password),
         )
-        if "@" not in user.email:
+        if user.name and user.email and user.password_hash:
+            if "@" not in user.email:
+                return redirect("error")
+            elif len(user.password_hash)< 8:
+                return redirect("error")
+            elif not number(user.password_hash):
+                return redirect("error")
+            else:        
+                user.save()
+            #logged in now, make cookie for that
+            return redirect("destinations")
+        else:
             return redirect("error")
-        elif len(user.password_hash)< 8:
-            return redirect("error")
-        elif not number(user.password_hash):
-            return redirect("error")
-        else:        
-            user.save()
-        #logged in now, make cookie for that
-        return redirect("destinations")
     return render(request, "Destinations/new_user.html")
 
 def newSession(request):
@@ -40,7 +43,7 @@ def newSession(request):
         email=params.get("email")
         user= User.objects.get(email=email)
         password = params.get("password")
-        isGood = check_password(password, user.password)
+        isGood = check_password(password, user.password_hash)
         if isGood:
             return redirect("destinations")
         else:
@@ -69,6 +72,10 @@ def newDestination(request):
 def editEntry(request):
     #figure out how to autofill the form
     return render(request, "Destinations/edit_destination.html")
+
+def deleteSession(request):
+    #delete the session token and redirect to index
+    return redirect("index")
 
 def error(request):
     return render(request, "Destinations/error.html")

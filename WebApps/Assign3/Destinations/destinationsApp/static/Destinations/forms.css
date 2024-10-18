@@ -1,3 +1,7 @@
+label{
+    color: rgb(146, 180, 167);
+}
+
 input{
     background: white;
     width: 200px;
@@ -26,3 +30,5 @@ button{
         box-shadow: 4px 6px rgba(0,0,0,0.5);
     }
 }
+
+

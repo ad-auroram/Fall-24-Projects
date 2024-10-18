@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'Destinations/styles.css' %}" />
     <link rel="stylesheet" href="{% static 'Destinations/index.css' %}" />
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'Destinations/destinations.css' %}" />
+    <title>Home</title>
 </head>
 <body>
     <header class="page-title">
@@ -16,8 +17,19 @@
             <a href="/sessions/new" class="new-link">Sign In</a>
         </section>
     </header>
-    <section>
+    <div class="spacer"></div>
+    <section id="review-container">
         list of recents goes here!
+        <div class="review-block">
+            <h2 class="place">Place</h2>
+            <div class="review">Review here asdfghjkl</div>
+            <div class="rating">4 / 5</div>
+        </div>
+        <div class="review-block">
+            <h2 class="place">Another one</h2>
+            <div class="review">Kinda boring tbh cant say i liked it lol</div>
+            <div class="rating">1/5</div>
+        </div>
     </section>
 </body>
 </html>

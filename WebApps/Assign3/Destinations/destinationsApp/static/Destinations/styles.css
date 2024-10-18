@@ -1,16 +1,19 @@
 body{
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: rgb(243, 249, 210);
+    background-color: rgb(47, 47, 47);
     color: rgb(47, 47, 47);
     text-align: center;
     align-items: center;
     
 }
 a{
-  text-decoration: none;  
-  font-size: large;
-  color: rgb(47, 47, 47);
-  margin-right: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;  
+    font-size: large;
+    color: rgb(47, 47, 47);
+    margin-right: 2em;
 }
 
 .page-title{
@@ -27,4 +30,10 @@ a{
 
 .spacer{
     padding:20px;
+}
+
+#links{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
