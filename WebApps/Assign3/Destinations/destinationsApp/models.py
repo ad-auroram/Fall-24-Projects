@@ -8,7 +8,7 @@ class User(models.Model):
 
 class Session(models.Model):
     token = models.TextField()
-    #one to one relationship with user
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
 
 class Destination(models.Model):
     name= models.TextField()

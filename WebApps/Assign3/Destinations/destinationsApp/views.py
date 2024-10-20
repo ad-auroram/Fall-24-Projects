@@ -1,14 +1,13 @@
 from django.shortcuts import render, redirect
 from .models import User, Destination, Session
 from django.contrib.auth.hashers import make_password, check_password
+import secrets
+
 # Create your views here.
 def index(request):
     #make a list of 5 recents and return with render
     destinations = Destination.objects.order_by('-id')[:5]
     return render(request, "Destinations/index.html",{'destinations': destinations})
-
-def number(s):
-    return any(i.isdigit() for i in s)
 
 def newUser(request):
     if request.method == "POST":
@@ -28,8 +27,8 @@ def newUser(request):
                 return redirect("error")
             else:        
                 user.save()
-            #logged in now, make cookie for that
-            return redirect("destinations")
+                #logged in now, make cookie for that
+                logIn()
         else:
             return redirect("error")
     return render(request, "Destinations/new_user.html")
@@ -45,37 +44,64 @@ def newSession(request):
         password = params.get("password")
         isGood = check_password(password, user.password_hash)
         if isGood:
-            return redirect("destinations")
+            #make token
+            logIn()
         else:
             return redirect("index")
     return render(request, "Destinations/new_session.html")
+
+
+
 
 def destinations(request):
     #make a list of destination that belong to that user
     #return it with the render and add a loop to the page
     return render(request, "Destinations/destinations.html")
 
+
 def newDestination(request):
     if request.method == "POST":
         params = request.POST
+        #get session from cookie
+        token = request.COOKIES.get('session_token')
+        session = Session.objects.get(token=token)
+                
         destination = Destination(
             name= params.get("destination"),
             review = params.get("review"),
             rating = params.get("rating"),
             share_publically = params.get("public"),
-            #get the user from the form
+            user = session.user
         )
         destination.save()
         return redirect("destinations")
     return render(request, "Destinations/new_destination.html")
 
+
 def editEntry(request):
     #figure out how to autofill the form
     return render(request, "Destinations/edit_destination.html")
 
+
 def deleteSession(request):
-    #delete the session token and redirect to index
-    return redirect("index")
+    token = request.COOKIES.get('session_token')
+    if token:
+        Session.objects.filter(token=token).delete()
+    response = redirect("index")
+    response.delete_cookie('session_token')
+    return response
+
+#utils
+def logIn():
+    token = secrets.token_hex(32)
+    session = Session.objects.create(token=token, user=user)
+    session.save()
+    response= redirect("destinations")
+    response.set_cookie("session_token", token)
+    return response
+    
+def number(s):
+    return any(i.isdigit() for i in s)
 
 def error(request):
     return render(request, "Destinations/error.html")
