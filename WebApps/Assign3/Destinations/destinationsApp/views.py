@@ -28,7 +28,7 @@ def newUser(request):
             else:        
                 user.save()
                 #logged in now, make cookie for that
-                logIn()
+                return logIn(user)
         else:
             return redirect("error")
     return render(request, "Destinations/new_user.html")
@@ -45,7 +45,7 @@ def newSession(request):
         isGood = check_password(password, user.password_hash)
         if isGood:
             #make token
-            logIn()
+            return logIn(user)
         else:
             return redirect("index")
     return render(request, "Destinations/new_session.html")
@@ -92,7 +92,7 @@ def deleteSession(request):
     return response
 
 #utils
-def logIn():
+def logIn(user):
     token = secrets.token_hex(32)
     session = Session.objects.create(token=token, user=user)
     session.save()
