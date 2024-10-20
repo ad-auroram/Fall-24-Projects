@@ -6,8 +6,20 @@ import secrets
 # Create your views here.
 def index(request):
     #make a list of 5 recents and return with render
-    destinations = Destination.objects.order_by('-id')[:5]
-    return render(request, "Destinations/index.html",{'destinations': destinations})
+    token = request.COOKIES.get('session_token')
+    if token:
+        links = [
+            {"name": "Home", "url": "/"},
+            {"name":"Profile", "url":"destinations"},
+            {"name":"Log Out","url": "/sessions/destroy"}
+            ]
+    else:
+        links = [
+            {"name": "Log In", "url": "sessions/new"},
+            {"name": "Create Account", "url": "users/new"},
+        ]
+    destinations = Destination.objects.filter(share_publically=True).order_by('-id')[:5]
+    return render(request, "Destinations/index.html",{"links":links, 'destinations': destinations})
 
 def newUser(request):
     if request.method == "POST":
@@ -56,21 +68,25 @@ def newSession(request):
 def destinations(request):
     #make a list of destination that belong to that user
     #return it with the render and add a loop to the page
-    return render(request, "Destinations/destinations.html")
+    token = request.COOKIES.get('session_token')
+    session = Session.objects.get(token=token)
+    posts = Destination.objects.filter(user=session.user)
+    return render(request, "Destinations/destinations.html", {'posts': posts})
 
 
 def newDestination(request):
     if request.method == "POST":
         params = request.POST
+        print(params)
         #get session from cookie
         token = request.COOKIES.get('session_token')
         session = Session.objects.get(token=token)
                 
         destination = Destination(
-            name= params.get("destination"),
+            name= params.get("name"),
             review = params.get("review"),
-            rating = params.get("rating"),
-            share_publically = params.get("public"),
+            rating = int(params.get("rating")),
+            share_publically = params.get("public")== "True",
             user = session.user
         )
         destination.save()
@@ -93,6 +109,10 @@ def deleteSession(request):
 
 #utils
 def logIn(user):
+    existing_session = Session.objects.filter(user=user).first()
+    if existing_session:
+        existing_session.delete()
+
     token = secrets.token_hex(32)
     session = Session.objects.create(token=token, user=user)
     session.save()

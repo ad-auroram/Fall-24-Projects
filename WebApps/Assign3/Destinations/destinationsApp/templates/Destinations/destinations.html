@@ -17,5 +17,19 @@
             <a href="/sessions/destroy" class="new-link">Log Out</a>
         </section>
     </header>
+    <section id="review-container">
+        <div class="spacer"></div>
+        {%if posts%}
+            {%for post in posts%}
+            <div class="review-block">
+                <h2 class="place">{{post.name}}</h2>
+                <div class="review">{{post.review}}</div>
+                <div class="rating">{{post.rating}} / 5</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No destinations yet!</p>
+        {%endif%}
+    </section>
 </body>
 </html>

@@ -9,6 +9,7 @@
     <title>New Destination</title>
 </head>
 <body>
+    {% csrf_token %}
     <header class="page-title">
         <h1 >Destinations</h1>
         <section id="links">
@@ -19,12 +20,12 @@
     <div class="spacer"></div>
     <form method="POST">
         <label for="location">Name:</label><br>
-        <input type = "text" id="location" name="location"><br>
+        <input type = "text" id="location" name="name"><br>
         <label for="review">Review</label><br>
         <input type = "text" id="review" name="review"><br>
-        <label for="score">Review</label><br>
-        <input type = "number" id="score" name="score" min="1" max="5"><br>
-        <input type = "checkbox" id="public" name="public">
+        <label for="score">Rating</label><br>
+        <input type = "number" id="rating" name="rating" min="1" max="5"><br>
+        <input type = "checkbox" id="public" name="public" value="True">
         <label for="public">Show publicly?</label> <br>
         <button class="submit" >Submit</button>
     </form>
