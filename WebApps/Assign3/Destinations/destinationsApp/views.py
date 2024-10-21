@@ -94,9 +94,18 @@ def newDestination(request):
     return render(request, "Destinations/new_destination.html")
 
 
-def editEntry(request):
-    #figure out how to autofill the form
-    return render(request, "Destinations/edit_destination.html")
+def editEntry(request, id):
+    destination = Destination.objects.get(id=id)
+    params = request.POST
+    if request.method == 'POST':
+        destination.name= params.get("name")
+        destination.review = params.get("review")
+        destination.rating = int(params.get("rating"))
+        destination.share_publically = params.get("public")== "True"
+        destination.save()
+        return redirect("destinations")
+    else:
+        return render(request, 'Destinations/edit_destination.html',  {'destination': destination})
 
 
 def deleteSession(request):

@@ -25,6 +25,7 @@
                 <h2 class="place">{{post.name}}</h2>
                 <div class="review">{{post.review}}</div>
                 <div class="rating">{{post.rating}} / 5</div>
+                <a href="{% url 'edit' post.id %}" class="edit-link">Edit</a>
             </div>
             {% endfor %}
         {% else %}

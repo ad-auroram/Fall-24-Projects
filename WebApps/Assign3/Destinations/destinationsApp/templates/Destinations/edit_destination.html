@@ -5,9 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'Destinations/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'Destinations/forms.css' %}" />
     <title>Edit Destination</title>
 </head>
 <body>
-    
+    {% csrf_token %}
+    <header class="page-title">
+        <h1 >Destinations</h1>
+        <section id="links">
+            <a href="/" class="new-link">Home</a>
+            <a href="/sessions/destroy" class="new-link">Log Out</a>
+        </section>
+    </header>
+    <div class="spacer"></div>
+    <form method="POST">
+        <label for="location">Name:</label><br>
+        <input type = "text" id="location" name="name" value="{{destination.name}}"><br>
+        <label for="review">Review</label><br>
+        <input type = "text" id="review" name="review" value="{{ destination.review }}"><br>
+        <label for="score">Rating</label><br>
+        <input type = "number" id="rating" name="rating" min="1" max="5" value="{{ destination.rating }}"><br>
+        <input type = "checkbox" id="public" name="public" value="True"{% if destination.public %} checked="True" {% endif %}>
+        <label for="public">Show publicly?</label> <br>
+        <button class="submit" >Submit</button>
+    </form>
 </body>
 </html>
