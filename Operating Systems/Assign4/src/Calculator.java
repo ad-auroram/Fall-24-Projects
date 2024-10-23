@@ -152,6 +152,6 @@ public class Calculator {
 
         System.out.println("\n" + piString);
         duration = System.currentTimeMillis() - duration;
-        System.out.println("Pi computation took "+duration+ " ms on "+numCores+" cores");
+        System.out.println("Pi computation took "+duration+ " ms");
     }
 }
