@@ -1,23 +1,51 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 class TaskQueue {
-    private Lock lock;
-    private LinkedList<Integer> tasks;
+    public Lock lock;
+    public LinkedList<Integer> tasks;
 
     public TaskQueue() {
         tasks = new LinkedList<>();
         lock = new ReentrantLock();
     }
-    //add method to add task
-    //add method to return next task (or null if empty)
-    //add method to check if empty
+
+    //add a task to the queue
+    public void addTask(int task) {
+        lock.lock();
+        try {
+            tasks.add(task);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    //returns next task
+    public Integer getTask() {
+        lock.lock();
+        try {
+            return tasks.poll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    //checks if the task list is empty
+    public boolean isEmpty(){
+        lock.lock();
+        try{
+            return tasks.isEmpty();
+        }finally{
+            lock.unlock();
+        }
+    }
 }
 
 class ResultTable {
-    private HashMap<Integer, Integer> results;
-    private Lock lock;
+    public HashMap<Integer, Integer> results;
+    public Lock lock;
 
     public ResultTable() {
         results = new HashMap<>();
@@ -25,36 +53,79 @@ class ResultTable {
     }
 
 
-    //method to add result to the table
-    //method to return map of results
+    //add result to the table
+    public void addResult(int index, int val){
+        lock.lock();
+        try{
+            results.put(index, val);
+        }finally{
+            lock.unlock();
+        }
+    }
+
+    //return map of results
     public Map<Integer, Integer> getResults() {
-        return new HashMap<>(results);
+        lock.lock();
+        try {
+            return new HashMap<>(results);
+        }finally{
+            lock.unlock();
+        }
     }
 }
 
 class PiWorker extends Thread {
-    private TaskQueue taskQueue;
-    private ResultTable resultTable;
-    private static int completedCount = 0;
-    private static final Lock countLock = new ReentrantLock();
+    public TaskQueue taskQueue;
+    public ResultTable resultTable;
+    public static final AtomicInteger completedCount = new AtomicInteger(0);
 
     public PiWorker(TaskQueue taskQueue, ResultTable resultTable) {
         this.taskQueue = taskQueue;
         this.resultTable = resultTable;
+
+    }
+    public void run() {
+        Integer task;
+        while ((task = taskQueue.getTask()) != null) {
+            int result = computePiDigit(task);
+            resultTable.addResult(task, result);
+            int count = completedCount.incrementAndGet();
+            if (count % 10 == 0) {
+                System.out.print(".");
+                System.out.flush();
+            }
+        }
     }
 
-    //make a loop to call bpp as long as there is a task in the queue
-    //print a "." for every count%10=0 (use lock when checking for count)
-    //method to call bpp with placement
+    private int computePiDigit(int index) {
+        Bpp bpp = new Bpp();
+        long num = bpp.getDecimal(index);
+        String stringNum = String.valueOf(num);
+        if (stringNum.length() == 8) return 0;
+        else{
+            String[] numbers = stringNum.split("");
+            return Integer.parseInt(numbers[0]);
+        }
+    }
 }
+
 public class Calculator {
     public static void main(String[] args) {
         int numDigits = 1000;
         TaskQueue taskQueue = new TaskQueue();
         ResultTable resultTable = new ResultTable();
-        long duration = System.currentTimeMillis();
-        //create tasks and randomize
+        List<Integer> tasks = new ArrayList<>();
 
+        //create tasks and randomize
+        for (int i = 0; i < numDigits; i++) {
+            tasks.add(i+1);
+        }
+        Collections.shuffle(tasks);
+        for (Integer task : tasks) {
+            taskQueue.addTask(task);
+        }
+
+        long duration = System.currentTimeMillis();
         //create threads
         int numCores = Runtime.getRuntime().availableProcessors();
         List<PiWorker> workers = new ArrayList<>();
@@ -63,7 +134,7 @@ public class Calculator {
             workers.add(worker);
             worker.start();
         }
-        // Wait for all threads to finish
+        // Wait for threads
         for (PiWorker worker : workers) {
             try {
                 worker.join();
@@ -73,12 +144,14 @@ public class Calculator {
         }
         Map<Integer, Integer> results = resultTable.getResults();
         StringBuilder piString = new StringBuilder("3.");
-        for (int i = 0; i < numDigits; i++) {
-            piString.append(results.get(i));
+        for (int i = 0; i < numDigits+1; i++) {
+            Integer result = results.get(i);
+            if (result == null) continue;
+            piString.append(result);
         }
 
         System.out.println("\n" + piString);
         duration = System.currentTimeMillis() - duration;
-        System.out.println("Pi computation took "+duration+ " ms");
+        System.out.println("Pi computation took "+duration+ " ms on "+numCores+" cores");
     }
 }

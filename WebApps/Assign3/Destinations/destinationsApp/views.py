@@ -39,7 +39,6 @@ def newUser(request):
                 return redirect("error")
             else:        
                 user.save()
-                #logged in now, make cookie for that
                 return logIn(user)
         else:
             return redirect("error")
@@ -48,15 +47,11 @@ def newUser(request):
 def newSession(request):
     if request.method == "POST":
         params = request.POST
-        #check if user in table
-        #check if password is legit
-        #make session cookie, we're logged in now
         email=params.get("email")
         user= User.objects.get(email=email)
         password = params.get("password")
         isGood = check_password(password, user.password_hash)
         if isGood:
-            #make token
             return logIn(user)
         else:
             return redirect("index")
@@ -66,8 +61,6 @@ def newSession(request):
 
 
 def destinations(request):
-    #make a list of destination that belong to that user
-    #return it with the render and add a loop to the page
     token = request.COOKIES.get('session_token')
     session = Session.objects.get(token=token)
     posts = Destination.objects.filter(user=session.user)
@@ -78,10 +71,8 @@ def newDestination(request):
     if request.method == "POST":
         params = request.POST
         print(params)
-        #get session from cookie
         token = request.COOKIES.get('session_token')
         session = Session.objects.get(token=token)
-                
         destination = Destination(
             name= params.get("name"),
             review = params.get("review"),
@@ -107,7 +98,6 @@ def editEntry(request, id):
     else:
         return render(request, 'Destinations/edit_destination.html',  {'destination': destination})
 
-
 def deleteSession(request):
     token = request.COOKIES.get('session_token')
     if token:
@@ -121,7 +111,6 @@ def logIn(user):
     existing_session = Session.objects.filter(user=user).first()
     if existing_session:
         existing_session.delete()
-
     token = secrets.token_hex(32)
     session = Session.objects.create(token=token, user=user)
     session.save()
