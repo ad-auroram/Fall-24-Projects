@@ -29,6 +29,7 @@ public class SchedulerSJF extends Scheduler{
             if (!readyQueue.isEmpty()){
                 Process next= readyQueue.poll();
                 platform.log("CPU "+cpu+" > Scheduled "+ next.getName());
+                contextSwitches++;
                 return next;
             } else {
                 return null;
@@ -41,10 +42,12 @@ public class SchedulerSJF extends Scheduler{
             if (!process.isExecutionComplete()){
                 platform.log("CPU "+cpu+" > Process "+ process.getName()+" burst complete");
                 readyQueue.add(process);
+                contextSwitches++;
             }
             else{
                 platform.log("CPU "+cpu+" > Process "+ process.getName()+" burst complete");
                 platform.log("CPU "+cpu+" > Process "+ process.getName()+" execution complete");
+                contextSwitches++;
             }
             // go to next process if current is done
             if (!readyQueue.isEmpty()) {
