@@ -35,6 +35,7 @@ public class SchedulerRR extends Scheduler{
                     readyQueue.add(process);
                     Process next = readyQueue.poll();
                     platform.log("CPU " + cpu + " > Time quantum complete for process " + process.getName());
+                    contextSwitches++;
                     platform.log("CPU " + cpu + " > Scheduled " + next.getName());
                     contextSwitches++;
                     time = savedTime - 1; // Reset time and start counting down immediately
@@ -48,10 +49,12 @@ public class SchedulerRR extends Scheduler{
                 // Process burst is complete
                 if (!process.isExecutionComplete()) {
                     platform.log("CPU " + cpu + " > Process " + process.getName() + " burst complete");
+                    contextSwitches++;
                     readyQueue.add(process);
                 } else {
                     platform.log("CPU " + cpu + " > Process " + process.getName() + " burst complete");
                     platform.log("CPU " + cpu + " > Process " + process.getName() + " execution complete");
+                    contextSwitches++;
                 }
 
                 // Schedule the next process in the queue
