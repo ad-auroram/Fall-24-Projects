@@ -1,23 +1,23 @@
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
+
 
 //shortest job first
 //whichever has the shortst time to complete goes first
 public class SchedulerSJF extends Scheduler{
-    private Queue<Process> readyQueue; // Queue to store ready processes
+    private PriorityQueue<Process> readyQueue; // Queue to store ready processes
     private Platform platform;
 
     public SchedulerSJF(Platform platform) {
         this.platform = platform;
-        this.readyQueue = new LinkedList<>();
+        readyQueue = new PriorityQueue<>(Comparator.comparingInt(Process::getTotalTime));
     }
 
     public void notifyNewProcess(Process process) {
-        readyQueue = sort(process);
+        readyQueue.add(process);
 
-    }
-    private LinkedList<Process> sort(Process process) {
-        //make and arraylist, sort it, return as linked list
     }
 
     /**
