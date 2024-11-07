@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
+import {Keyboard} from "./components/keyboard";
 
 function App() {
-  const [count, setCount] = useState(0)
   const typedText = "Woah th"
   const nextChar = "i"
   const notTyped = "s is crazy."
@@ -13,8 +13,9 @@ function App() {
         <span className="next">{nextChar}</span>
         <span className="remaining-text">{notTyped}</span>
       </div>
-      <div className="keyboard">
-        
+      <div className='space'></div>
+      <div>
+      <Keyboard/>
       </div>
     </>
   )
