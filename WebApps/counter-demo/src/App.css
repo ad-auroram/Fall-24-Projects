@@ -1,0 +1,33 @@
+body{
+  background-color: rgb(216, 180, 226);
+}
+
+#root {
+  
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  color: rgb(33, 11, 44);
+}
+
+
+.card {
+  padding: 1em;
+  display: inline;
+}
+
+
+.count {
+  font-size:xx-large;
+  padding: 2em;
+  border: 2px dotted black;
+  border-radius: 15px;
+}
+
+button{
+  background-color: aliceblue;
+  border: 1px solid black;
+  margin: 10px;
+  
+}
