@@ -1,0 +1,17 @@
+
+.phrase{
+  display:flex;
+  font-family:'Courier New', Courier, monospace;
+  font-size: 4em;
+  font-weight: bold;
+  align-items: center;
+}
+
+.remaining-text{
+  color: #0a307c80
+}
+
+.next{
+  text-decoration: underline;
+  color: #0a307c80;
+}
