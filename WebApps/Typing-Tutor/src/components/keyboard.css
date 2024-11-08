@@ -42,3 +42,8 @@
 .highlighted {
 box-shadow: 0 4px 0 2px #ff0000b3;
 }
+
+.key.active {
+    box-shadow: 0 1px #0006;
+    transform: translateY(6px);
+  }
