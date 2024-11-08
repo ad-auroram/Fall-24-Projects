@@ -6,11 +6,16 @@
   min-height: 100vh;
 }
 .phrase{
-  display:flex;
-  font-family:'Courier New', Courier, monospace;
-  font-size: 4em;
-  font-weight: bold;
-  justify-content: center;
+  padding: 16px;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 5em;
+  text-align: center;
+  color: #0a307c80;
+}
+
+.typed-text{
+  color:black;
 }
 
 .remaining-text{
