@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './keyboard.css'
 import {Row} from './keyRow'
 
-export function Keyboard(){
+export function Keyboard(next){
     const row1Upper = ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+"]
     const row1Lower = ["`","1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="]
     const row2Upper = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|"]
@@ -25,41 +25,44 @@ export function Keyboard(){
         if (keyPressed === "Shift") {
           setIsShiftPressed(true);
         } else {
-          setPressedKey(keyPressed); // Set the currently pressed key
+          setPressedKey(keyPressed);
         }
       };
   
       const handleKeyUp = (event) => {
         if (event.key === "Shift") {
-          setIsShiftPressed(false); // Reset Shift state when released
+          setIsShiftPressed(false);
+        } else{
+          setPressedKey(null)
         }
       };
   
-      // Add event listeners
+
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);
   
-      // Cleanup event listeners
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
         window.removeEventListener('keyup', handleKeyUp);
       };
     }, []);
   
-    // Choose the rows based on whether Shift is pressed
     const row1 = isShiftPressed ? row1Upper : row1Lower;
     const row2 = isShiftPressed ? row2Upper : row2Lower;
     const row3 = isShiftPressed ? row3Upper : row3Lower;
     const row4 = isShiftPressed ? row4Upper : row4Lower;
 
+    const isSpace = next.next === " ";
+    const isPressed = pressedKey === " "
+    
     return (
         <div className='board'>
             <div className='gap'></div>
-            <Row keys={row1} pressedKey={pressedKey} />
-            <Row keys={row2} pressedKey={pressedKey} />
-            <Row keys={row3} pressedKey={pressedKey} />
-            <Row keys={row4} pressedKey={pressedKey} />
-            <div className="key spacebar"> </div>
+            <Row keys={row1} pressedKey={pressedKey} nextChar = {next} />
+            <Row keys={row2} pressedKey={pressedKey} nextChar = {next} />
+            <Row keys={row3} pressedKey={pressedKey} nextChar = {next} />
+            <Row keys={row4} pressedKey={pressedKey} nextChar = {next} />
+            <div className={`key spacebar ${isSpace ? "highlighted" : ""} ${isPressed ? "active" : ""}`}> </div>
             <div className='gap'></div>
         </div>
     )
