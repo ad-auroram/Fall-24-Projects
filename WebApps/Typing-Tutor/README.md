@@ -1,0 +1,11 @@
+Program Requirements:
+- When a user presses down one or more keys, those keys should appear "pressed" on the onscreen keyboard.
+- When a user lifts up one or more keys that were pressed, those keys should become "unpressed" on the onscreen keyboard.
+- When the user presses the shift key, the onscreen keyboard should display the "capitalized" version of each letter/number.
+- The text that has yet to be typed is a different color from the text that has been typed.
+- The next character to be typed is underlined.
+- When the key pressed corresponds to the next character to be typed, the character joins the characters that have already been typed, and the underline moves to the next character.
+- Pressing a key that does not correspond to the next character does nothing
+- When the user has typed the entire phrase, a new phrase that has yet to be typed is displayed with the first character underlined.
+- Capitalization matters. If the character is uppercase, the shift needs to be pressed as well as the letter key.
+- The on screen keyboard displays the key of the next character with a red box shadow.

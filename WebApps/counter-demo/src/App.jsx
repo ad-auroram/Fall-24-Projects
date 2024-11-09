@@ -7,7 +7,6 @@ function App() {
   return (
     <>
       <div>
-       
       </div>
       <h1>Counting</h1>
       <div className='count'>{count}</div>
