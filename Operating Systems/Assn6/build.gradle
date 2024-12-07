@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+application{
+	mainClassName = 'Assign6'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Assign6'
+    }
+}
+
+run {
+    standardInput = System.in
+}
+
+archivesBaseName = 'Assign6'
