@@ -1,36 +1,39 @@
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
 
-public class TaskMRU implements Runnable{
+public class TaskMRU implements Runnable {
     private final int[] sequence;
     private final int maxMemoryFrames;
-    private final int[] pageFaults;
+    private final AtomicInteger[] pageFaults;
+    private final CountDownLatch latch;
 
-    public TaskMRU(int[] sequence, int maxMemoryFrames, int[] pageFaults) {
-            this.sequence = sequence;
-            this.maxMemoryFrames = maxMemoryFrames;
-            this.pageFaults = pageFaults;
+    public TaskMRU(int[] sequence, int maxMemoryFrames, AtomicInteger[] pageFaults, CountDownLatch latch) {
+        this.sequence = sequence;
+        this.maxMemoryFrames = maxMemoryFrames;
+        this.pageFaults = pageFaults;
+        this.latch = latch;
     }
 
-    //FIFO, change later
     @Override
     public void run() {
-        List<Integer> memory = new ArrayList<>();
+        List<Integer> memory = new LinkedList<>();
         int faults = 0;
 
         for (int page : sequence) {
             if (!memory.contains(page)) {
                 faults++;
                 if (memory.size() == maxMemoryFrames) {
-                    //remove old page
-                    memory.remove(0);
+                    memory.remove(memory.size() - 1);
                 }
+                memory.add(page);
+            } else {
+                memory.remove((Integer) page);
                 memory.add(page);
             }
         }
 
-        pageFaults[maxMemoryFrames - 1] = faults;
+        pageFaults[maxMemoryFrames - 1].set(faults);
+        latch.countDown();
     }
 }
